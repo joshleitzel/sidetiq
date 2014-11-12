@@ -59,6 +59,12 @@ module Sidetiq
   def handler
     Sidetiq::Supervisor.handler
   end
+
+  def millisecond_precision?
+    @millisecond_precision ||= Sidekiq.redis do |redis|
+      redis.info['redis_version'] >= '2.6'
+    end
+  end
 end
 
 if Sidekiq.server?

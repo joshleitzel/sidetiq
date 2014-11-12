@@ -35,7 +35,11 @@ module Sidetiq
       end
 
       def pttl
-        Sidekiq.redis { |r| r.pttl(key) }
+        if Sidetiq.millisecond_precision?
+          Sidekiq.redis { |r| r.pttl(key) }
+        else
+          Sidekiq.redis { |r| r.ttl(key) * 1000 }
+        end
       end
 
       def to_json
